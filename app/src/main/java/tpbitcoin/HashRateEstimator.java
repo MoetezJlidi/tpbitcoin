@@ -4,7 +4,6 @@ import org.bitcoinj.core.Sha256Hash;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Random;
 
 public class HashRateEstimator {
     private final int duration; // Duration of each experiment, in milliseconds
@@ -36,15 +35,15 @@ public class HashRateEstimator {
         }
 
         for (int i = 0; i < numberOfTries; i++) {
-            startTime = System.nanoTime();
+            startTime = System.currentTimeMillis();
             totalHashes += performSHA256Hash(md);
-            endTime = System.nanoTime();
+            endTime = System.currentTimeMillis();
             elapsedTime = endTime - startTime;
 
             // Sleep for the remaining duration if needed
-            if (elapsedTime < duration * 1_000_000) {
+            if (elapsedTime < duration) {
                 try {
-                    Thread.sleep(duration - (elapsedTime / 1_000_000));
+                    Thread.sleep(duration - elapsedTime);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -64,7 +63,7 @@ public class HashRateEstimator {
     private int performSHA256Hash(MessageDigest md) {
         // Dummy data to hash (can be anything)
         byte[] data = new byte[64];
-        new Random().nextBytes(data);
+        new java.util.Random().nextBytes(data);
 
         // Perform SHA-256 hash
         byte[] hash = md.digest(data);
@@ -73,9 +72,5 @@ public class HashRateEstimator {
         return 1;
     }
 
-    public static void main(String[] args) {
-        HashRateEstimator estimator = new HashRateEstimator(1000, 10); // 10 experiments of 1 second each
-        double hashRate = estimator.estimate();
-        System.out.println("Estimated Hash Rate: " + hashRate + " hashes per second");
-    }
+
 }

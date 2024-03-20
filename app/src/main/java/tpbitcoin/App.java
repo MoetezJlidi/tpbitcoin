@@ -27,7 +27,9 @@ public class App {
     public static void main(String[] args) {
 
         //Q1  hashrate
-        double localHashrate = new HashRateEstimator(5000,5).estimate();
+        HashRateEstimator estimator = new HashRateEstimator(7, 10); // 10 experiments of 1 second each
+        double hashRate = estimator.estimate();
+        System.out.println("Question numéro 1 : Estimated Hash Rate: " + hashRate + " hashes per second");
 
         // Q2: latest  block  from mainet (bitcoin blockchain) and its predecessor
         Context context   = new Context(new UnitTestParams()); // required  for working with bitcoinj
